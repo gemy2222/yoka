@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>منيو آية</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      font-family: 'Cairo', sans-serif;
+      height: 100%;
+    }
+
+    /* خلفية متحركة باستخدام canvas */
+    canvas#bgCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(#ffe4ec, #ffccdc, #ffc1d6);
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      right: 0;
+      left: 0;
+      background: rgba(255, 182, 193, 0.95);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      padding: 20px;
+      z-index: 10;
+      animation: fadeDown 1s ease-out;
+    }
+
+    @keyframes fadeDown {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    header h1 {
+      font-size: 2em;
+      color: #a6005c;
+      margin: 0;
+      text-shadow: 0 0 6px #fff;
+    }
+
+    header p {
+      font-size: 1em;
+      color: #6e3e4d;
+      margin-top: 8px;
+    }
+
+    .menu-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 20px;
+      padding: 160px 20px 40px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .menu-item {
+      background: rgba(255, 240, 250, 0.95);
+      padding: 15px;
+      border-radius: 18px;
+      box-shadow: 0 0 12px #ffd3e0;
+      text-align: center;
+      font-size: 1.1em;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .menu-item:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 25px #ff99c9;
+    }
+
+    .display-area {
+      text-align: center;
+      margin-top: 40px;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: all 0.6s ease;
+      pointer-events: none;
+    }
+
+    .display-area.active {
+      opacity: 1;
+      transform: scale(1);
+      pointer-events: auto;
+    }
+
+    .display-area img {
+      width: 330px;
+      max-width: 95%;
+      border-radius: 20px;
+      box-shadow: 0 0 25px #ff99cc;
+      transition: all 0.5s ease;
+      animation: zoomIn 0.8s ease;
+    }
+
+    @keyframes zoomIn {
+      from {
+        transform: scale(0.6);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .caption {
+      background: #fff0f7;
+      padding: 15px 20px;
+      margin-top: 20px;
+      display: inline-block;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #ffccdd;
+      font-size: 1.1em;
+      max-width: 90%;
+    }
+
+    .footer-msg {
+      margin-top: 25px;
+      font-style: italic;
+      color: #555;
+      font-size: 0.95em;
+    }
+  </style>
+</head>
+<body>
+  <!-- خلفية متحركة -->
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- الهيدر -->
+  <header>
+    <h1>منيو آية للحلويات</h1>
+    <p>حلويات!!؟...مافي احلى من هيك🌚🍩</p>
+  </header>
+
+  <!-- القائمة -->
+  <div class="menu-list">
+    <div class="menu-item" onclick="showMenu('aya1')">🌚🍩بسبوسة بالقشطة </div>
+    <div class="menu-item" onclick="showMenu('aya2')">🌚🍩كنافة</div>
+    <div class="menu-item" onclick="showMenu('aya3')">🌚🍩كنافة بالمانجة </div>
+    <div class="menu-item" onclick="showMenu('aya4')">🌚🍩ملبن </div>
+    <div class="menu-item" onclick="showMenu('aya5')">🌚🍩بسبوسة بالمكسرات </div>
+    <div class="menu-item" onclick="showMenu('aya6')">🌚🍩تورتة بالنوتيلا</div>
+  </div>
+
+  <!-- عرض الصور -->
+  <div class="display-area" id="display">
+    <img id="dishImage" src="" alt="آية">
+    <div class="caption" id="captionText"></div>
+    <div class="footer-msg">انت احلى ....والدنيا معاك تحلى </div>
+  </div>
+
+  <!-- جافا سكريبت -->
+  <script>
+    const data = {
+      aya1: { img: "yoka1.jpg", caption: "❤️🍩بسبوسة مش هتاكل زيها في مكان تاني" },
+      aya2: { img: "yoka2.jpg", caption: "❤️🍩اي رايكوا في كنافتنا"},
+      aya3: { img: "yoka3.jpg", caption: "❤️🍩طب متجربوا الكنافة بالمانجة من عندنا" },
+      aya4: { img: "yoka4.jpg", caption: "❤️🍩حد عنده ملبن زينا كده!!!"},
+      aya5: { img: "yoka5.jpg", caption: "❤️🍩ياسلام على حلاوة بسبوستنا الي بالمكسرات" },
+      aya6: { img: "yoka6.jpg", caption:"❤️🍩لا دي حتة نوتيلا عادي " }
+    };
+
+    function showMenu(key) {
+      const item = data[key];
+      const img = document.getElementById("dishImage");
+      const caption = document.getElementById("captionText");
+      const display = document.getElementById("display");
+      img.src = item.img;
+      caption.textContent = item.caption;
+      display.classList.add("active");
+    }
+
+    // خلفية متحركة باستخدام canvas
+    const canvas = document.getElementById("bgCanvas");
+    const ctx = canvas.getContext("2d");
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    function createParticles() {
+      particles = [];
+      for (let i = 0; i < 80; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 2 + 1,
+          dx: (Math.random() - 0.5) * 0.5,
+          dy: (Math.random() - 0.5) * 0.5,
+          color: `rgba(255, ${150 + Math.random() * 100}, ${200 + Math.random() * 55}, 0.6)`
+        });
+      }
+    }
+
+    function drawParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+        p.x += p.dx;
+        p.y += p.dy;
+
+        if (p.x < 0 || p.x > canvas.width) p.dx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.dy *= -1;
+      });
+      requestAnimationFrame(drawParticles);
+    }
+
+    createParticles();
+    drawParticles();
+  </script>
+</body>
+</html>
